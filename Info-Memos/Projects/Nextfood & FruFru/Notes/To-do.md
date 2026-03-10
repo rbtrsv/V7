@@ -83,12 +83,12 @@ FruFru products are also listed on Freshful and Mega Image.
 
 Extract key information from company-provided PDFs into .md files in `/Notes/Research/`:
 
-- [ ] `Prezentare Fru & Life - B2B colab.pdf` → `Notes/Research/Official-B2B-Colab.md`
+- [x] `Prezentare Fru & Life - B2B colab.pdf` → `Notes/Research/Official-B2B-Colab.md` ✅
   - B2B offering, corporate catering menus, pricing (platouri, meniu pranz, meniu sarbatori)
   - Contact info, ambalaje, add-ons
-- [ ] `Prezentare Gama FruFru (in ambalaj).pdf` → `Notes/Research/Official-Gama-FruFru.md`
+- [x] `Prezentare Gama FruFru (in ambalaj).pdf` → `Notes/Research/Official-Gama-FruFru.md` ✅
   - Full packaged product range, SKUs, descriptions
-- [ ] `Prezentare LifeBox.pdf` → `Notes/Research/Official-LifeBox.md`
+- [x] `Prezentare LifeBox.pdf` → `Notes/Research/Official-LifeBox.md` ✅
   - 7 menu types (OptimBox, Office-Optim, Veggie-Fish, Vegan, Sport, Comfort, Custom)
   - Pricing tiers, caloric ranges, delivery zones, nutritional data, ingredients
 
@@ -101,12 +101,12 @@ Extract key information from company-provided PDFs into .md files in `/Notes/Res
 - **CAGR and all calculations are done by Python** — never hardcode or interpolate figures.
 
 ### Steps
-1. [ ] Extract financial data from Excel files into CSV:
-   - `02 P&L vs BGT 2025.xlsx` → CSV
-   - `12.2024_P&L_consolidat - LIFEBOX.xlsx` → CSV
-   - `Buget 2026 nf.xlsx` → CSV
-   - Output CSVs go to: `/Generated Data/Financial CSVs/`
-2. [ ] **REVERIFY** — manually review each CSV against the original Excel to confirm accuracy
+1. [x] Extract financial data from Excel files into CSV: ✅
+   - `12.2024_P&L_consolidat - LIFEBOX.xlsx` → `historic_lifebox_2020_2023.csv`, `consolidat_2023_2024.csv`, `consolidat_2024_monthly.csv`
+   - `02 P&L vs BGT 2025.xlsx` → `consolidat_2025_monthly.csv`, `bu_frufru_2025_budget.csv`, `bu_lifebox_2025_budget.csv`, `bu_catering_2025_budget.csv`
+   - `Buget 2026 nf.xlsx` → `buget_2026_optimist.csv`, `buget_2026_base.csv`
+   - Output CSVs: `/Generated Data/Financial CSVs/` (9 files total — consolidated + separate BU)
+2. [x] **REVERIFIED** — all 9 CSVs checked against original Excel files, zero mismatches ✅
 3. [ ] Python generation scripts read from these CSVs (not from hardcoded values)
 4. [ ] CAGR, growth rates, margins — all computed by Python at generation time
 5. [ ] Financial charts/tables in PDF/PPTX pull directly from CSV data
@@ -168,19 +168,31 @@ Year,Revenue,COGS,Gross_Profit,OPEX,EBITDA,Net_Profit
 
 ## PRODUCTION TO-DO (after research is complete)
 
-- [ ] Create .md notes from Official Info PDFs (see OFFICIAL INFO section above)
-- [ ] Extract financial data from Excel files into CSVs (see FINANCIAL DATA PIPELINE above)
-- [ ] **REVERIFY** CSVs against original Excel files
-- [ ] Compile all research findings into `/Notes/Research/` .md files (with sources)
-- [ ] Study KPMG PPT examples for layout/style guidance
-- [ ] Study existing PDF generation scripts for technical patterns
-- [ ] Convert frufru-logo.svg to PNG for PDF embedding
-- [ ] Write Python script for PDF generation (3 pages, logos only — no product images)
+- [x] Create .md notes from Official Info PDFs (3 files) ✅
+- [x] Extract financial data from Excel files into CSVs (9 files — consolidated + separate BU) ✅
+- [x] **REVERIFIED** CSVs against original Excel files — zero mismatches ✅
+- [x] Compile all research findings into `/Notes/Research/` .md files — 9 files total (6 web/press + 3 official) ✅
+- [x] Study KPMG PPT examples for layout/style guidance ✅ → `Notes/Research/Generation-Patterns.md`
+- [x] Study existing PDF generation scripts for technical patterns ✅ → `Notes/Research/Generation-Patterns.md`
+- [x] Convert frufru-logo.svg to PNG for PDF embedding ✅ → `Logos/frufru-logo.png` (800x172px)
+- [x] Write Python script for PDF generation (3 pages, logos only — no product images) ✅
   - Financial data read from CSVs
   - CAGR and all metrics calculated by Python
-- [ ] Write Python script for PPTX generation (3 pages, using python-pptx, logos only)
+  - Script: `Generated Data/Scripts/generate_info_memo_pdf.py`
+- [x] Write Python script for PPTX generation (3 pages, using python-pptx, logos only) ✅
   - Financial data read from CSVs
   - CAGR and all metrics calculated by Python
-- [ ] Generate both PDF and PPTX outputs
-- [ ] Review & iterate
+  - Script: `Generated Data/Scripts/generate_info_memo_pptx.py`
+- [x] Generate both PDF and PPTX outputs ✅
+  - `Generated Data/Nextfood_FruFru_Info_Memo.pdf` (3 pages)
+  - `Generated Data/Nextfood_FruFru_Info_Memo.pptx` (3 slides, 10.83"x7.50")
+- [x] Review & iterate — V2 fixes: ✅
+  - [x] **Financial tables**: Complete P&L tables with ALL line items — historic 2020-2023, consolidated 2023-2024, budget 2025 consolidated + BU breakdown, budget 2026 base case (H1 + FY) ✅
+  - [x] **Team fix**: Simiuc = FruFru/OTOTO only. Lifebox founders = Radu Balaceanu, Florin Scarlat ✅
+  - [x] **Key risks**: Removed speculative risks (competition, margin pressure, scale limitations). Kept 3 factual: relaunch execution, EBITDA gap, production minority stake ✅
+  - [x] **Market research**: Romanian RTE market research → `Notes/Research/Market-Research.md` (TAM, growth, competitors, consumer trends, Poland CEE comparison) ✅
+  - [x] **Market context**: Added to PDF/PPTX — EUR 1.75B market, 3.7% CAGR, Poland as CEE leading indicator ✅
+  - [x] **Competitive landscape**: Added table (Salad Box, FoodKit, Pep&Pepper) ✅
+  - [x] Updated both generation scripts (PDF + PPTX) to V2 — 4 pages/slides ✅
+  - [x] Regenerated both PDF + PPTX outputs ✅
 - [ ] (Later, optional) Add extracted product images with removed backgrounds to margins
