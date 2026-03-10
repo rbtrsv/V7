@@ -1,0 +1,51 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documents & large files
+*.pdf
+*.PDF
+*.xlsx
+*.xls
+*.csv
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.svg
+*.ico
+*.webp
+
+# Videos & audio
+*.mp4
+*.mov
+*.avi
+*.mp3
+*.wav
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
