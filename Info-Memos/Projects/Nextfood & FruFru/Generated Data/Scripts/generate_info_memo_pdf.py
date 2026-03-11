@@ -47,28 +47,28 @@ OUTPUT_DIR = os.path.dirname(SCRIPT_DIR)  # Generated Data/
 # Logo paths
 FRUFRU_LOGO = os.path.join(LOGO_DIR, "frufru-logo.png")
 LIFEBOX_LOGO = os.path.join(LOGO_DIR, "llifebox-logo.png")
+V7_LOGO = os.path.join(LOGO_DIR, "v7capital-logo.png")
 
 # Output path
 OUTPUT_PDF = os.path.join(OUTPUT_DIR, "Nextfood_FruFru_Info_Memo.pdf")
 
 
-# ==================== COLORS ====================
+# ==================== COLORS (V7 Capital Brand Guidelines 2026) ====================
 
-# Professional blue palette (KPMG-inspired but neutral)
-PRIMARY_BLUE = '#1B365D'      # deep navy — headers, titles
-ACCENT_BLUE = '#2C5AA0'       # medium blue — section headers, table headers
-LIGHT_BLUE = '#4A90D9'        # lighter blue — accents
-VERY_LIGHT_BLUE = '#E8F0FE'   # background highlights
-DARK_TEXT = '#1A1A1A'          # body text
-MEDIUM_TEXT = '#4A4A4A'        # subtitles
+PRIMARY_BLUE = '#0d1c43'      # Dull Violet Black — headers, titles, primary text
+ACCENT_BLUE = '#bc892b'       # Khaki — accent, section headers, table headers
+LIGHT_BLUE = '#a7d4e4'        # Pale King's Blue B — strategic accents
+VERY_LIGHT_BLUE = '#f0f3e7'   # Pale King's Blue A — background highlights
+DARK_TEXT = '#0d1c43'          # Dull Violet Black — body text
+MEDIUM_TEXT = '#0d1c43'        # Dull Violet Black — subtitles
 LIGHT_TEXT = '#666666'         # footnotes, captions
-GREEN_ACCENT = '#2E7D32'      # positive highlights
+GREEN_ACCENT = '#bc892b'      # Khaki — positive highlights
 RED_ACCENT = '#C62828'        # risk / negative highlights
 
 
 # ==================== EXCHANGE RATES ====================
 
-# RON/EUR average annual exchange rates (from NBR / Romania Ministry of Finance)
+# RON/EUR average annual exchange rates (from BNR / Romania Ministry of Finance)
 EXCHANGE_RATES_FILE = os.path.join(CSV_DIR, "exchange_rates_ron_eur.json")
 
 
@@ -513,8 +513,7 @@ def create_info_memo_pdf():
         'Founded by <b>Radu Balaceanu and Florin Scarlat</b>. '
         '7 personalised menu types (OptimBox, Vegan, Sport, Custom, etc.) designed by nutritionists. '
         'Delivery zones: Bucharest, Cluj, Oradea, Budapest (as FrissBox). '
-        'Simiuc acquired 17.5% minority stake (via Next Food) in October 2024 to secure '
-        'production capacity for FruFru products, since the Unilever buyback excluded the factory.'
+        'Shared production infrastructure with FruFru — the Unilever buyback excluded the factory.'
     )
 
     col_width = page_width / 2 - 0.15 * cm
@@ -553,14 +552,25 @@ def create_info_memo_pdf():
     ))
     elements.append(Spacer(1, 0.1 * cm))
 
-    # --- Entities table ---
+    # --- Entity ---
     entities_data = [
-        ['Entity', 'Brand', 'Role', 'Ownership'],
-        ['Good People SA', 'FruFru', 'Packaged retail products (#farabazaconii)', 'Mihai Simiuc (100%, bought back from Unilever)'],
-        ['Nextfood SRL', 'Lifebox', 'Production & meal delivery platform', 'Balaceanu, Scarlat; Simiuc 17.5%'],
+        ['Entity', 'Brands', 'Role'],
+        ['Nextfood SRL', 'Lifebox + FruFru', 'Production, meal delivery, packaged retail (#farabazaconii)'],
     ]
     elements.append(make_table(entities_data,
-        col_widths=[3.2 * cm, 2 * cm, page_width - 9.6 * cm, 4.4 * cm]))
+        col_widths=[3.2 * cm, 3 * cm, page_width - 6.2 * cm]))
+    elements.append(Spacer(1, 0.1 * cm))
+
+    # --- Ownership structure (from constitutive act) ---
+    ownership_data = [
+        ['Shareholder', 'Shares', '%'],
+        ['Urban Monkey S.R.L. (Mihai Simiuc)', '115,500', '38.5%'],
+        ['Vertical Seven Group S.A.', '120,000', '40.0%'],
+        ['Scarlat Florin-Ioan', '45,000', '15.0%'],
+        ['O Sacosa cu Tei S.R.L.', '19,500', '6.5%'],
+    ]
+    elements.append(make_table(ownership_data,
+        col_widths=[page_width * 0.55, page_width * 0.25, page_width * 0.2]))
     elements.append(Spacer(1, 0.15 * cm))
 
     # --- Team Section (FIXED: separate FruFru/OTOTO and Lifebox teams) ---
@@ -599,7 +609,7 @@ def create_info_memo_pdf():
         ['2019', 'Unilever acquires 75% of Good People SA (FruFru + Urban Monkey)'],
         ['2021', 'Lifebox expands to Budapest (FrissBox)'],
         ['2024 Jan', 'Simiuc buys back FruFru & Urban Monkey brands from Unilever'],
-        ['2024 Oct', 'FruFru relaunched; Simiuc acquires 17.5% stake in Lifebox for production synergies'],
+        ['2024 Oct', 'FruFru relaunched via retail (Mega Image, Freshful) and OTOTO stores'],
     ]
     elements.append(make_table(timeline_data,
         col_widths=[2.2 * cm, page_width - 2.2 * cm],
@@ -608,7 +618,7 @@ def create_info_memo_pdf():
     # --- Page 1 footer ---
     elements.append(Spacer(1, 0.2 * cm))
     elements.append(Paragraph(
-        '<b>CONFIDENTIAL</b> | All figures in EUR (converted at avg annual RON/EUR, NBR) | EUR at average annual RON/EUR rate (NBR)',
+        '<b>CONFIDENTIAL</b> | All figures in EUR (converted at avg annual RON/EUR, BNR) | EUR at average annual RON/EUR rate (BNR)',
         footer_style
     ))
 
@@ -737,7 +747,7 @@ def create_info_memo_pdf():
     # --- Page 2 footer ---
     elements.append(Spacer(1, 0.2 * cm))
     elements.append(Paragraph(
-        '<b>CONFIDENTIAL</b> | All figures in EUR (converted at avg annual RON/EUR, NBR) | Source: Company management data',
+        '<b>CONFIDENTIAL</b> | All figures in EUR (converted at avg annual RON/EUR, BNR) | Source: Company management data',
         footer_style
     ))
 
@@ -839,8 +849,6 @@ def create_info_memo_pdf():
     elements.append(Spacer(1, 0.1 * cm))
 
     # --- Revenue Trajectory & CAGR (RON + EUR) ---
-    elements.append(Paragraph("Revenue Trajectory", subsection_style))
-
     # EUR equivalents using year-specific exchange rates
     rev_2024_eur = to_eur(rev_2024, 2024)
     rev_2025_eur = to_eur(rev_2025_bgt, 2025)
@@ -863,30 +871,29 @@ def create_info_memo_pdf():
          str(EXCHANGE_RATES.get('2026')), ''],
     ]
     cw_traj = (page_width - 4 * cm) / 4
-    elements.append(make_table(trajectory_data,
+    traj_table = make_table(trajectory_data,
         col_widths=[4 * cm, cw_traj, cw_traj, cw_traj, cw_traj],
-        bold_rows={1}))
-    elements.append(Spacer(1, 0.05 * cm))
+        bold_rows={1})
 
-    elements.append(Paragraph(
+    traj_note = Paragraph(
         f'<i>2026E base case targets RON {fmt_ron(rev_2026_bgt)} ({fmt_eur(rev_2026_eur)}) revenue with '
         f'RON {fmt_ron(ebitda_2026)} ({fmt_eur(ebitda_2026_eur)}) EBITDA ({fmt_pct_abs(ebitda_margin_2026)} margin). '
         f'Revenue CAGR 2024A→2026E: {fmt_pct(fin["cagr_rev_2024_2026"])}. '
-        f'EUR conversion at average annual RON/EUR rates (NBR).</i>',
+        f'EUR conversion at average annual RON/EUR rates (BNR).</i>',
         small_style
-    ))
+    )
 
-    # --- Page 3 footer ---
-    elements.append(Spacer(1, 0.2 * cm))
-    elements.append(Paragraph(
-        '<b>CONFIDENTIAL</b> | All figures in EUR (converted at avg annual RON/EUR, NBR) | Source: Company management data',
-        footer_style
-    ))
+    # KeepTogether so title + table + note don't split across pages
+    elements.append(KeepTogether([
+        Paragraph("Revenue Trajectory", subsection_style),
+        traj_table,
+        Spacer(1, 0.05 * cm),
+        traj_note,
+    ]))
 
-    # ==================== PAGE 4: INVESTMENT HIGHLIGHTS & RISKS ====================
+    # --- Investment Highlights (continues on same page as budget/trajectory) ---
 
-    elements.append(PageBreak())
-
+    elements.append(Spacer(1, 0.3 * cm))
     elements.append(make_section_banner("INVESTMENT HIGHLIGHTS"))
     elements.append(Spacer(1, 0.15 * cm))
 
@@ -894,9 +901,8 @@ def create_info_memo_pdf():
         ('<b>Proven Brand with Unilever Pedigree.</b> FruFru operated under Unilever for 5 years, '
          'inheriting operational discipline and brand credibility. The buyback preserves brand equity '
          'while restoring entrepreneurial agility.'),
-        ('<b>Integrated Production Platform.</b> The 17.5% stake in Lifebox secures in-house production '
-         'capacity in Bucharest. Shared kitchen infrastructure serves three revenue streams '
-         '(FruFru retail, Lifebox subscriptions, B2B catering) with operational leverage.'),
+        ('<b>Integrated Production Platform.</b> Shared kitchen infrastructure in Bucharest serves '
+         'three revenue streams (FruFru retail, Lifebox subscriptions, B2B catering) with operational leverage.'),
         ('<b>Multi-Channel Distribution.</b> Modern trade (Mega Image, Freshful/Kaufland), '
          'D2C (lifebox.ro), B2B catering, and OTOTO stores (Simiuc\'s separate retail chain — '
          'distribution synergies). Diversified channels reduce single-retailer dependency.'),
@@ -949,23 +955,16 @@ def create_info_memo_pdf():
         col_widths=[3 * cm, 3.5 * cm, 3 * cm, page_width - 9.5 * cm],
         font_size_body=6.5))
 
-    # --- Footer ---
-    elements.append(Spacer(1, 0.4 * cm))
-    elements.append(HRFlowable(
-        width="100%", thickness=0.5, color=HexColor('#CCCCCC'),
-        spaceAfter=4, spaceBefore=2
-    ))
-    elements.append(Paragraph(
-        '<b>CONFIDENTIAL</b> | This document has been prepared for informational purposes only. '
-        'Financial projections are management estimates and subject to change. '
-        'All figures in EUR (converted at avg annual RON/EUR, NBR).',
-        small_style
-    ))
-    elements.append(Paragraph(
-        f'Generated: {datetime.now().strftime("%d %B %Y")} | '
-        'Contact: adriana.dimitriu@urbanmonkey.ro | +40 743 467 130',
-        footer_style
-    ))
+    # --- Footer + V7 logo (keep together so logo stays on same page) ---
+    if os.path.exists(V7_LOGO):
+        v7_img = Image(V7_LOGO, width=2.24 * cm, height=2.8 * cm)
+        v7_img.hAlign = 'RIGHT'
+        elements.append(KeepTogether([
+            Spacer(1, 0.15 * cm),
+            HRFlowable(width="100%", thickness=0.5, color=HexColor('#CCCCCC'),
+                        spaceAfter=2, spaceBefore=2),
+            v7_img,
+        ]))
 
     # ==================== BUILD PDF ====================
 

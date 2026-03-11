@@ -41,22 +41,23 @@ OUTPUT_DIR = os.path.dirname(SCRIPT_DIR)
 FRUFRU_LOGO = os.path.join(LOGO_DIR, "frufru-logo.png")
 LIFEBOX_LOGO = os.path.join(LOGO_DIR, "llifebox-logo.png")
 OUTPUT_PPTX = os.path.join(OUTPUT_DIR, "Nextfood_FruFru_Info_Memo.pptx")
+V7_LOGO = os.path.join(LOGO_DIR, "v7capital-logo.png")
 
-# ==================== COLORS ====================
+# ==================== COLORS (V7 Capital Brand Guidelines 2026) ====================
 
-PRIMARY_BLUE = RGBColor(0x1B, 0x36, 0x5D)
-ACCENT_BLUE = RGBColor(0x2C, 0x5A, 0xA0)
-VERY_LIGHT_BLUE = RGBColor(0xE8, 0xF0, 0xFE)
-DARK_TEXT = RGBColor(0x1A, 0x1A, 0x1A)
-MEDIUM_TEXT = RGBColor(0x4A, 0x4A, 0x4A)
-LIGHT_TEXT = RGBColor(0x66, 0x66, 0x66)
+PRIMARY_BLUE = RGBColor(0x0D, 0x1C, 0x43)    # Dull Violet Black — headers, titles
+ACCENT_BLUE = RGBColor(0xBC, 0x89, 0x2B)     # Khaki — accent, section headers, table headers
+VERY_LIGHT_BLUE = RGBColor(0xF0, 0xF3, 0xE7) # Pale King's Blue A — background highlights
+DARK_TEXT = RGBColor(0x0D, 0x1C, 0x43)        # Dull Violet Black — body text
+MEDIUM_TEXT = RGBColor(0x0D, 0x1C, 0x43)      # Dull Violet Black — subtitles
+LIGHT_TEXT = RGBColor(0x66, 0x66, 0x66)       # footnotes, captions
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-GREEN_ACCENT = RGBColor(0x2E, 0x7D, 0x32)
-ROW_ALT = RGBColor(0xF5, 0xF7, 0xFA)
+GREEN_ACCENT = RGBColor(0xBC, 0x89, 0x2B)     # Khaki — positive highlights
+ROW_ALT = RGBColor(0xF0, 0xF3, 0xE7)          # Pale King's Blue A — alternating rows
 
 # ==================== EXCHANGE RATES ====================
 
-# RON/EUR average annual exchange rates (from NBR / Romania Ministry of Finance)
+# RON/EUR average annual exchange rates (from BNR / Romania Ministry of Finance)
 EXCHANGE_RATES_FILE = os.path.join(CSV_DIR, "exchange_rates_ron_eur.json")
 
 
@@ -458,8 +459,7 @@ def create_info_memo_pptx():
         "Founded by Radu Balaceanu and Florin Scarlat. "
         "7 personalised menu types (OptimBox, Vegan, Sport, Custom, etc.) designed by nutritionists. "
         "Delivery zones: Bucharest, Cluj, Oradea, Budapest (as FrissBox). "
-        "Simiuc acquired 17.5% minority stake (via Next Food) in October 2024 to secure "
-        "production capacity for FruFru products.",
+        "Shared production infrastructure with FruFru — the Unilever buyback excluded the factory.",
         font_size=8, color=DARK_TEXT)
 
     # --- Market context ---
@@ -470,26 +470,37 @@ def create_info_memo_pptx():
         "a trajectory Romania is expected to follow.",
         font_size=7, color=LIGHT_TEXT)
 
-    # --- Entities table ---
+    # --- Entity ---
     entities_data = [
-        ['Entity', 'Brand', 'Role', 'Ownership'],
-        ['Good People SA', 'FruFru', 'Packaged retail (#farabazaconii)', 'Mihai Simiuc (100%, from Unilever)'],
-        ['Nextfood SRL', 'Lifebox', 'Production & meal delivery', 'Balaceanu, Scarlat; Simiuc 17.5%'],
+        ['Entity', 'Brands', 'Role'],
+        ['Nextfood SRL', 'Lifebox + FruFru', 'Production, meal delivery, packaged retail (#farabazaconii)'],
     ]
     add_table(slide1, margin_left, Cm(8.5), content_width,
-              entities_data, [3, 2, 5, 5], font_size=7)
+              entities_data, [3, 3, 9], font_size=7)
+
+    # --- Ownership structure (from constitutive act) ---
+    ownership_data = [
+        ['Shareholder', 'Shares', '%'],
+        ['Urban Monkey S.R.L. (Mihai Simiuc)', '115,500', '38.5%'],
+        ['Vertical Seven Group S.A.', '120,000', '40.0%'],
+        ['Scarlat Florin-Ioan', '45,000', '15.0%'],
+        ['O Sacosa cu Tei S.R.L.', '19,500', '6.5%'],
+    ]
+    add_table(slide1, margin_left, Cm(9.5), content_width,
+              ownership_data, [7, 3, 2], font_size=7)
 
     # --- Team ---
-    add_section_banner(slide1, margin_left, Cm(10.5), content_width, "TEAM")
+    # Ownership table: 9.5 + 5×0.45 = ~11.75cm
+    add_section_banner(slide1, margin_left, Cm(12.0), content_width, "TEAM")
 
-    add_textbox(slide1, margin_left, Cm(11.5), content_width, Cm(1.2),
+    add_textbox(slide1, margin_left, Cm(13.0), content_width, Cm(1.2),
         "FruFru — Mihai Simiuc (Founder & CEO). Serial entrepreneur, HEC MBA. "
         "Founded FruFru (2006), grew to RON 34.4M revenue, sold to Unilever (2019), bought back 2024. "
         "Also operates OTOTO retail chain (separate business, distribution synergies). "
         "Senior Adviser at Comitis Capital (Frankfurt PE).",
         font_size=8, color=DARK_TEXT)
 
-    add_textbox(slide1, margin_left, Cm(12.7), content_width, Cm(1.0),
+    add_textbox(slide1, margin_left, Cm(14.2), content_width, Cm(1.0),
         "Lifebox — Radu Balaceanu, Florin Scarlat (Co-founders). "
         "Team: Dr. Anamaria Iulian (Nutritionist), Chef Alex Cirtu (Head Chef). "
         "~60 kitchen staff, 1,500 sqm production facility (APACA, Bucharest). ~1,000 boxes/day.",
@@ -502,14 +513,15 @@ def create_info_memo_pptx():
         ['2017', 'Lifebox founded by Balaceanu, Scarlat'],
         ['2019', 'Unilever acquires 75% of Good People SA'],
         ['2024 Jan', 'Simiuc buys back FruFru & Urban Monkey from Unilever'],
-        ['2024 Oct', 'FruFru relaunched; Simiuc acquires 17.5% in Lifebox for production synergies'],
+        ['2024 Oct', 'FruFru relaunched via retail (Mega Image, Freshful) and OTOTO stores'],
     ]
-    add_table(slide1, margin_left, Cm(13.8), content_width,
+    # Team ends at ~15.2cm, timeline 6 rows × 0.45 = 2.7cm → ends ~18.2cm (tight but fits)
+    add_table(slide1, margin_left, Cm(15.4), content_width,
               timeline_data, [2, 15], header_color=PRIMARY_BLUE, font_size=7)
 
     # --- Footer ---
     add_textbox(slide1, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, NBR)",
+                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 2: HISTORIC & CURRENT FINANCIALS ====================
@@ -615,7 +627,7 @@ def create_info_memo_pptx():
 
     # --- Footer ---
     add_textbox(slide2, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, NBR)",
+                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 3: BUDGET & FORWARD-LOOKING ====================
@@ -767,7 +779,7 @@ def create_info_memo_pptx():
 
     # --- Footer ---
     add_textbox(slide3, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, NBR)",
+                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 4: INVESTMENT HIGHLIGHTS & RISKS ====================
@@ -780,7 +792,7 @@ def create_info_memo_pptx():
         ("Proven Brand with Unilever Pedigree.",
          "FruFru operated under Unilever for 5 years. Buyback preserves brand equity while restoring agility."),
         ("Integrated Production Platform.",
-         "17.5% stake in Lifebox secures in-house production. Three revenue streams with operational leverage."),
+         "Shared kitchen infrastructure in Bucharest serves three revenue streams with operational leverage."),
         ("Multi-Channel Distribution.",
          "Modern trade (Mega Image, Freshful), D2C (lifebox.ro), B2B catering, "
          "and OTOTO stores (Simiuc's separate retail — distribution synergies)."),
@@ -825,9 +837,13 @@ def create_info_memo_pptx():
 
     # --- Footer ---
     add_textbox(slide4, margin_left, Cm(17.7), content_width, Cm(0.4),
-                f"CONFIDENTIAL | Generated: {datetime.now().strftime('%d %B %Y')} | "
-                "Contact: adriana.dimitriu@urbanmonkey.ro | +40 743 467 130",
+                "CONFIDENTIAL",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
+
+    # V7 Capital logo — bottom-right of last slide
+    if os.path.exists(V7_LOGO):
+        # 1080x1350 original → scale to ~2.5cm height
+        slide4.shapes.add_picture(V7_LOGO, Cm(24.0), Cm(15.5), height=Cm(2.5))
 
     # ==================== SAVE ====================
 
