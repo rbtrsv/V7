@@ -450,7 +450,7 @@ def create_info_memo_pptx():
         "Sold to Unilever (75%) in 2019, bought back January 2024. Relaunched October 2024. "
         "~30+ SKUs: fresh salads, soups, bowls, mains, desserts. "
         "Brand DNA: #farabazaconii — no preservatives, no nonsense. "
-        "Distributed via Freshful (Kaufland), Mega Image, lifebox.ro, and OTOTO stores "
+        "Distributed via Freshful, Kaufland, Mega Image, Carrefour, lifebox.ro, and OTOTO stores "
         "(Simiuc's separate retail chain — distribution synergies).",
         font_size=8, color=DARK_TEXT)
 
@@ -481,10 +481,10 @@ def create_info_memo_pptx():
     # --- Ownership structure (from constitutive act) ---
     ownership_data = [
         ['Shareholder', 'Shares', '%'],
-        ['Urban Monkey S.R.L. (Mihai Simiuc)', '115,500', '38.5%'],
+        ['Mihai Simiuc', '115,500', '38.5%'],
         ['Vertical Seven Group S.A.', '120,000', '40.0%'],
         ['Scarlat Florin-Ioan', '45,000', '15.0%'],
-        ['O Sacosa cu Tei S.R.L.', '19,500', '6.5%'],
+        ['Radu Balaceanu', '19,500', '6.5%'],
     ]
     add_table(slide1, margin_left, Cm(9.5), content_width,
               ownership_data, [7, 3, 2], font_size=7)
@@ -513,7 +513,7 @@ def create_info_memo_pptx():
         ['2017', 'Lifebox founded by Balaceanu, Scarlat'],
         ['2019', 'Unilever acquires 75% of Good People SA'],
         ['2024 Jan', 'Simiuc buys back FruFru & Urban Monkey from Unilever'],
-        ['2024 Oct', 'FruFru relaunched via retail (Mega Image, Freshful) and OTOTO stores'],
+        ['2024 Oct', 'FruFru relaunched via retail (Mega Image, Carrefour, Freshful) and OTOTO stores'],
     ]
     # Team ends at ~15.2cm, timeline 6 rows × 0.45 = 2.7cm → ends ~18.2cm (tight but fits)
     add_table(slide1, margin_left, Cm(15.4), content_width,
@@ -521,7 +521,7 @@ def create_info_memo_pptx():
 
     # --- Footer ---
     add_textbox(slide1, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
+                "CONFIDENTIAL",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 2: HISTORIC & CURRENT FINANCIALS ====================
@@ -538,97 +538,64 @@ def create_info_memo_pptx():
     ebitda_2026 = fin['budget_2026']['EBITDA_Normalised']
     ebitda_margin_2026 = ebitda_2026 / rev_2026_bgt if rev_2026_bgt > 0 else None
 
-    kpi_w = int(content_width / 4 - Cm(0.2))
+    cagr_rev = fin['cagr_rev_2024_2026']
+
+    kpi_w = int(content_width / 5 - Cm(0.2))
     kpi_y = Cm(1.3)
+    kpi_gap = Cm(0.2)
     add_kpi_box(slide2, margin_left, kpi_y, kpi_w, Cm(1.1),
                 eur(rev_2024, 2024), "Revenue 2024")
-    add_kpi_box(slide2, margin_left + kpi_w + Cm(0.27), kpi_y, kpi_w, Cm(1.1),
+    add_kpi_box(slide2, margin_left + 1 * (kpi_w + kpi_gap), kpi_y, kpi_w, Cm(1.1),
                 eur(rev_2025_bgt, 2025), "Budget 2025")
-    add_kpi_box(slide2, margin_left + 2 * (kpi_w + Cm(0.27)), kpi_y, kpi_w, Cm(1.1),
+    add_kpi_box(slide2, margin_left + 2 * (kpi_w + kpi_gap), kpi_y, kpi_w, Cm(1.1),
                 eur(rev_2026_bgt, 2026), "Budget 2026")
-    add_kpi_box(slide2, margin_left + 3 * (kpi_w + Cm(0.27)), kpi_y, kpi_w, Cm(1.1),
+    add_kpi_box(slide2, margin_left + 3 * (kpi_w + kpi_gap), kpi_y, kpi_w, Cm(1.1),
                 eur(ebitda_2026, 2026), "EBITDA 2026E", value_color=GREEN_ACCENT)
+    add_kpi_box(slide2, margin_left + 4 * (kpi_w + kpi_gap), kpi_y, kpi_w, Cm(1.1),
+                fmt_pct(cagr_rev), "CAGR 24→26E", value_color=GREEN_ACCENT)
 
-    # --- Historic Lifebox P&L (ALL lines) ---
+    # --- Single Consolidated P&L: 2023, 2024, 2025B ---
     add_textbox(slide2, margin_left, Cm(2.6), content_width, Cm(0.4),
-                "Historic P&L — Lifebox Standalone (2020–2023)",
-                font_size=9, bold=True, color=PRIMARY_BLUE)
-
-    h = fin['historic']
-    hy = [2020, 2021, 2022, 2023]
-    def h_eur(m):
-        return [eur(h[m][i], hy[i]) for i in range(4)]
-
-    hist_data = [
-        ['EUR', '2020', '2021', '2022', '2023'],
-        ['Boxes Produced', fmt_int(h['Boxes_Produced'][0]), fmt_int(h['Boxes_Produced'][1]),
-         fmt_int(h['Boxes_Produced'][2]), fmt_int(h['Boxes_Produced'][3])],
-        ['Net Revenue'] + h_eur('Net_Revenue'),
-        ['  Material Costs'] + h_eur('Material_Costs'),
-        ['Material Margin'] + h_eur('Material_Margin'),
-        ['  Labor'] + h_eur('Labor_Direct_Indirect'),
-        ['  Manufacturing'] + h_eur('Manufacturing'),
-        ['  Depreciation'] + h_eur('Depreciation_Production'),
-        ['Gross Margin'] + h_eur('Gross_Margin'),
-        ['  Transport'] + h_eur('Transport_Costs'),
-        ['  Marketing'] + h_eur('Marketing'),
-        ['  G&A'] + h_eur('GA'),
-        ['EBITDA'] + h_eur('EBITDA_Normalised'),
-        ['Net Profit'] + h_eur('Net_Profit'),
-    ]
-    add_table(slide2, margin_left, Cm(3.1), int(content_width * 0.55),
-              hist_data, [3, 2, 2, 2, 2], font_size=6.5,
-              bold_rows={2, 4, 8, 12, 13})
-
-    # --- Consolidated P&L (ALL lines) ---
-    right_x = margin_left + int(content_width * 0.57)
-    right_w = int(content_width * 0.43)
-
-    add_textbox(slide2, right_x, Cm(2.6), right_w, Cm(0.4),
-                "Consolidated P&L (2023 vs 2024)",
+                "Consolidated P&L — Lifebox + Catering (2023–2024) | + FruFru (2025B)",
                 font_size=9, bold=True, color=PRIMARY_BLUE)
 
     c = fin['consolidated']
+    c25 = fin['consolidated_2025']
     growth_rev = fin['growth_rev_2023_2024']
-    def c_eur(m):
-        return [eur(c[m][0], 2023), eur(c[m][1], 2024)]
 
-    cons_data = [
-        ['EUR', '2023', '2024', 'YoY'],
-        ['Production (KG)', fmt_int(c['Cantitate_Produsa_KG'][0]), fmt_int(c['Cantitate_Produsa_KG'][1]),
-         fmt_pct(calc_cagr(c['Cantitate_Produsa_KG'][0], c['Cantitate_Produsa_KG'][1], 1))],
-        ['Boxes', fmt_int(c['Boxuri_Produse'][0]), fmt_int(c['Boxuri_Produse'][1]),
-         fmt_pct(calc_cagr(c['Boxuri_Produse'][0], c['Boxuri_Produse'][1], 1))],
-        ['Net Revenue'] + c_eur('Net_Revenue') + [fmt_pct(growth_rev)],
-        ['  Material Costs'] + c_eur('Material_Costs') + [''],
-        ['Material Margin'] + c_eur('Material_Margin') + [
-         fmt_pct(calc_cagr(c['Material_Margin'][0], c['Material_Margin'][1], 1))],
-        ['  Labor'] + c_eur('Labor_Direct_Indirect') + [''],
-        ['  Manufacturing'] + c_eur('Manufacturing') + [''],
-        ['  Depreciation'] + c_eur('Depreciation_Production') + [''],
-        ['Gross Margin'] + c_eur('Gross_Margin') + [
-         fmt_pct(calc_cagr(c['Gross_Margin'][0], c['Gross_Margin'][1], 1))],
-        ['  Transport'] + c_eur('Transport_Costs') + [''],
-        ['  Marketing'] + c_eur('Marketing') + [''],
-        ['  G&A'] + c_eur('GA') + [''],
-        ['EBITDA'] + c_eur('EBITDA_Normalised') + ['—'],
-        ['Net Profit'] + c_eur('Net_Profit') + ['—'],
+    merged_data = [
+        ['EUR', '2023', '2024', '2025 B'],
+        ['Net Revenue / Sales',
+         eur(c['Net_Revenue'][0], 2023), eur(c['Net_Revenue'][1], 2024), eur(c25['Sales'], 2025)],
+        ['  Material Costs / COGS',
+         eur(c['Material_Costs'][0], 2023), eur(c['Material_Costs'][1], 2024), eur(c25['COGS'], 2025)],
+        ['Gross Margin',
+         eur(c['Gross_Margin'][0], 2023), eur(c['Gross_Margin'][1], 2024), eur(c25['Gross_Margin_After_COGS'], 2025)],
+        ['  Labor',
+         eur(c['Labor_Direct_Indirect'][0], 2023), eur(c['Labor_Direct_Indirect'][1], 2024), eur(c25['Labor_Direct_Indirect'], 2025)],
+        ['  Manufacturing',
+         eur(c['Manufacturing'][0], 2023), eur(c['Manufacturing'][1], 2024), eur(c25['Manufacturing'], 2025)],
+        ['  Delivery / Transport',
+         eur(c['Transport_Costs'][0], 2023), eur(c['Transport_Costs'][1], 2024), eur(c25['Delivery'], 2025)],
+        ['  Marketing',
+         eur(c['Marketing'][0], 2023), eur(c['Marketing'][1], 2024), eur(c25['Marketing'], 2025)],
+        ['  G&A',
+         eur(c['GA'][0], 2023), eur(c['GA'][1], 2024), eur(c25['GA'], 2025)],
+        ['EBITDA',
+         eur(c['EBITDA_Normalised'][0], 2023), eur(c['EBITDA_Normalised'][1], 2024), eur(c25['EBITDA'], 2025)],
+        ['Net Profit',
+         eur(c['Net_Profit'][0], 2023), eur(c['Net_Profit'][1], 2024), eur(c25['Net_Profit'], 2025)],
     ]
-    add_table(slide2, right_x, Cm(3.1), right_w,
-              cons_data, [3, 2, 2, 1.5], font_size=6.5,
-              bold_rows={3, 5, 9, 13, 14})
+    add_table(slide2, margin_left, Cm(3.1), content_width,
+              merged_data, [5, 3, 3, 3], font_size=7,
+              bold_rows={1, 3, 9, 10})
 
-    # --- Notes ---
-    add_textbox(slide2, margin_left, Cm(10.2), content_width, Cm(0.6),
-        f"Revenue peaked at {eur(h['Net_Revenue'][1], 2021)} in 2021, declined post-COVID. "
-        f"Consolidated revenue grew {fmt_pct(growth_rev)} YoY (2023→2024) driven by FruFru relaunch and B2B catering. "
+    # --- Note ---
+    add_textbox(slide2, margin_left, Cm(8.5), content_width, Cm(0.6),
+        f"2023–2024: Lifebox + Catering only. 2025B includes FruFru relaunch. "
+        f"Revenue grew {fmt_pct(growth_rev)} YoY (2023→2024). "
         f"EBITDA negative due to relaunch investment and scaling costs.",
         font_size=6.5, color=LIGHT_TEXT)
-
-    # --- Footer ---
-    add_textbox(slide2, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
-                font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 3: BUDGET & FORWARD-LOOKING ====================
 
@@ -637,39 +604,8 @@ def create_info_memo_pptx():
     add_section_banner(slide3, margin_left, Cm(0.3), content_width,
                        "FINANCIAL BUDGET — FORWARD LOOKING")
 
-    # --- Consolidated Budget 2025 (ALL lines) — compact rows to fit everything ---
-    add_textbox(slide3, margin_left, Cm(1.3), int(content_width * 0.48), Cm(0.4),
-                "Consolidated P&L — Budget 2025",
-                font_size=9, bold=True, color=PRIMARY_BLUE)
-
-    c25 = fin['consolidated_2025']
-    e25 = lambda m: eur(c25[m], 2025)
-    cons25_data = [
-        ['EUR', 'Total 2025E'],
-        ['Sales', e25('Sales')],
-        ['  COGS', e25('COGS')],
-        ['    Food Cost', e25('Food_Cost')],
-        ['    Packaging', e25('Packaging')],
-        ['Gross Margin', e25('Gross_Margin_After_COGS')],
-        ['  Labor', e25('Labor_Direct_Indirect')],
-        ['  Manufacturing', e25('Manufacturing')],
-        ['  Depreciation', e25('Depreciation_Production')],
-        ['  Delivery', e25('Delivery')],
-        ['  Marketing', e25('Marketing')],
-        ['  G&A', e25('GA')],
-        ['EBITDA', e25('EBITDA')],
-        ['Net Profit', e25('Net_Profit')],
-    ]
-    # Compact row height (0.37cm) — 14 rows × 0.37 = 5.18cm, ending at ~6.98cm
-    add_table(slide3, margin_left, Cm(1.8), int(content_width * 0.48),
-              cons25_data, [5, 3], font_size=6.5,
-              bold_rows={1, 5, 12, 13}, row_height_cm=0.37)
-
     # --- Budget 2025 by BU ---
-    bu_x = margin_left + int(content_width * 0.52)
-    bu_w = int(content_width * 0.48)
-
-    add_textbox(slide3, bu_x, Cm(1.3), bu_w, Cm(0.4),
+    add_textbox(slide3, margin_left, Cm(1.3), int(content_width * 0.5), Cm(0.4),
                 "Budget 2025 — By Business Unit",
                 font_size=9, bold=True, color=PRIMARY_BLUE)
 
@@ -691,7 +627,7 @@ def create_info_memo_pptx():
          eur(bf['Gross_Margin'] + bl['Gross_Margin'] + bc['Gross_Margin'], 2025),
          '100.0%'],
     ]
-    add_table(slide3, bu_x, Cm(1.8), bu_w,
+    add_table(slide3, margin_left, Cm(1.8), int(content_width * 0.5),
               bu_data, [3, 2, 2, 2, 1.5], font_size=6.5,
               bold_rows={5}, row_height_cm=0.37)
 
@@ -736,50 +672,10 @@ def create_info_memo_pptx():
               b26_data, [4, 2.5, 2.5], font_size=6.5,
               bold_rows={4, 7, 8, 11, 13, 17}, row_height_cm=0.37)
 
-    # --- Revenue Trajectory (EUR equivalents using year-specific exchange rates) ---
-    traj_x = margin_left + int(content_width * 0.58)
-    traj_w = int(content_width * 0.42)
-
-    add_textbox(slide3, traj_x, b26_title_y, traj_w, Cm(0.4),
-                "Revenue Trajectory",
-                font_size=9, bold=True, color=PRIMARY_BLUE)
-
-    # EUR equivalents
-    rev_2024_eur = to_eur(rev_2024, 2024)
-    rev_2025_eur = to_eur(rev_2025_bgt, 2025)
-    rev_2026_eur = to_eur(rev_2026_bgt, 2026)
-    ebitda_2024_eur = to_eur(c['EBITDA_Normalised'][1], 2024)
-    ebitda_2025_eur = to_eur(c25['EBITDA'], 2025)
-    ebitda_2026_eur = to_eur(ebitda_2026, 2026)
-    cagr_eur = calc_cagr(rev_2024_eur, rev_2026_eur, 2) if rev_2024_eur and rev_2026_eur else None
-
-    traj_data = [
-        ['EUR', '2024A', '2025E', '2026E', 'CAGR'],
-        ['Revenue', fmt_eur(rev_2024_eur), fmt_eur(rev_2025_eur), fmt_eur(rev_2026_eur),
-         fmt_pct(cagr_eur)],
-        ['EBITDA', fmt_eur(ebitda_2024_eur), fmt_eur(ebitda_2025_eur),
-         fmt_eur(ebitda_2026_eur), '—'],
-        ['EBITDA %', '—',
-         fmt_pct_abs(c25['EBITDA'] / c25['Sales']) if c25['Sales'] > 0 else 'N/A',
-         fmt_pct_abs(ebitda_margin_2026) if ebitda_margin_2026 else 'N/A', '—'],
-        ['RON/EUR rate', str(EXCHANGE_RATES.get('2024')), str(EXCHANGE_RATES.get('2025')),
-         str(EXCHANGE_RATES.get('2026')), ''],
-    ]
-    add_table(slide3, traj_x, b26_table_y, traj_w,
-              traj_data, [2.5, 2, 2, 2, 1.5], font_size=6.5,
-              bold_rows={1, 2}, row_height_cm=0.37)
-
-    # --- Note ---
-    # Budget 2026 ends at: 7.7 + 18×0.37 = ~14.36cm
-    add_textbox(slide3, margin_left, Cm(14.7), content_width, Cm(0.5),
-        f"2026E base case: {fmt_eur(rev_2026_eur)} revenue, "
-        f"{fmt_eur(ebitda_2026_eur)} EBITDA ({fmt_pct_abs(ebitda_margin_2026)} margin). "
-        f"Revenue CAGR 2024A→2026E: {fmt_pct(cagr_eur)}.",
-        font_size=7, color=LIGHT_TEXT)
 
     # --- Footer ---
     add_textbox(slide3, margin_left, Cm(17.7), content_width, Cm(0.4),
-                "CONFIDENTIAL | All figures in EUR (converted at avg annual RON/EUR, BNR)",
+                "CONFIDENTIAL",
                 font_size=6, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
 
     # ==================== SLIDE 4: INVESTMENT HIGHLIGHTS & RISKS ====================
@@ -794,7 +690,7 @@ def create_info_memo_pptx():
         ("Integrated Production Platform.",
          "Shared kitchen infrastructure in Bucharest serves three revenue streams with operational leverage."),
         ("Multi-Channel Distribution.",
-         "Modern trade (Mega Image, Freshful), D2C (lifebox.ro), B2B catering, "
+         "Modern trade (Mega Image, Carrefour, Freshful), D2C (lifebox.ro), B2B catering, "
          "and OTOTO stores (Simiuc's separate retail — distribution synergies)."),
         ("Founder-Operator Alignment.",
          "Simiuc — founder since 2006, PE advisor at Comitis Capital. "
@@ -815,7 +711,7 @@ def create_info_memo_pptx():
 
     portfolio_data = [
         ['Brand', 'Channel', 'Products', 'Price Range'],
-        ['FruFru', 'Retail (Mega Image, Freshful, OTOTO*)', '~30+ SKUs: salads, soups, bowls, mains', 'RON 15–41'],
+        ['FruFru', 'Retail (Mega Image, Carrefour, Freshful, Kaufland, OTOTO*)', '~30+ SKUs: salads, soups, bowls, mains', 'RON 15–41'],
         ['Lifebox', 'D2C subscription (daily delivery)', '7 menu types: OptimBox, Vegan, Sport, etc.', 'RON 20.5–30.8/meal'],
         ['B2B Catering', 'Corporate (min 20 portions)', 'Daily lunch, holiday, event platters', 'RON 130–500/platter'],
     ]
