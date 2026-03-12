@@ -665,18 +665,27 @@ def create_info_memo_pdf():
     # consolidated_2025: Sales, COGS, Gross_Margin_After_COGS, Labor_Direct_Indirect,
     #   Manufacturing, Delivery, Marketing, GA, EBITDA, Net_Profit
 
+    # Gross_Margin_After_COGS (2025) = Sales - COGS = Material Margin (same as Material_Margin in 2023-2024)
+    # Gross_Margin (2023-2024) = Material Margin - Labor - Manufacturing - Depreciation Production
+    # For 2025: calculate Gross Margin = Gross_Margin_After_COGS - Labor - Manufacturing - Depreciation
+    gm_2025 = c25['Gross_Margin_After_COGS'] - c25['Labor_Direct_Indirect'] - c25['Manufacturing'] - c25['Depreciation_Production']
+
     merged_table_data = [
         ['EUR', '2023', '2024', '2025 B'],
         ['Net Revenue / Sales',
          eur(c['Net_Revenue'][0], 2023), eur(c['Net_Revenue'][1], 2024), eur(c25['Sales'], 2025)],
         ['  Material Costs / COGS',
          eur(c['Material_Costs'][0], 2023), eur(c['Material_Costs'][1], 2024), eur(c25['COGS'], 2025)],
-        ['Gross Margin',
-         eur(c['Gross_Margin'][0], 2023), eur(c['Gross_Margin'][1], 2024), eur(c25['Gross_Margin_After_COGS'], 2025)],
+        ['Material Margin',
+         eur(c['Material_Margin'][0], 2023), eur(c['Material_Margin'][1], 2024), eur(c25['Gross_Margin_After_COGS'], 2025)],
         ['  Labor (Direct + Indirect)',
          eur(c['Labor_Direct_Indirect'][0], 2023), eur(c['Labor_Direct_Indirect'][1], 2024), eur(c25['Labor_Direct_Indirect'], 2025)],
         ['  Manufacturing',
          eur(c['Manufacturing'][0], 2023), eur(c['Manufacturing'][1], 2024), eur(c25['Manufacturing'], 2025)],
+        ['  Depreciation (Production)',
+         eur(c['Depreciation_Production'][0], 2023), eur(c['Depreciation_Production'][1], 2024), eur(c25['Depreciation_Production'], 2025)],
+        ['Gross Margin',
+         eur(c['Gross_Margin'][0], 2023), eur(c['Gross_Margin'][1], 2024), eur(gm_2025, 2025)],
         ['  Delivery / Transport',
          eur(c['Transport_Costs'][0], 2023), eur(c['Transport_Costs'][1], 2024), eur(c25['Delivery'], 2025)],
         ['  Marketing',
@@ -689,10 +698,10 @@ def create_info_memo_pdf():
          eur(c['Net_Profit'][0], 2023), eur(c['Net_Profit'][1], 2024), eur(c25['Net_Profit'], 2025)],
     ]
     cw3 = (page_width - 4 * cm) / 3
-    # Bold rows: Net Revenue (1), Gross Margin (3), EBITDA (9), Net Profit (10)
+    # Bold rows: Net Revenue (1), Material Margin (3), Gross Margin (7), EBITDA (11), Net Profit (12)
     elements.append(make_table(merged_table_data,
         col_widths=[4 * cm, cw3, cw3, cw3],
-        bold_rows={1, 3, 9, 10}))
+        bold_rows={1, 3, 7, 11, 12}))
     elements.append(Spacer(1, 0.05 * cm))
 
     elements.append(Paragraph(
